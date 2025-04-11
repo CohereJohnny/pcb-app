@@ -10,8 +10,17 @@ import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 
-// No specific page props needed as params are read via hook
-export default function ViewAnnouncementPage() {
+type ViewAnnouncementPageProps = {
+  params: { 
+    camp_id: string;
+    announcement_id: string;
+  };
+  searchParams: Record<string, string | string[] | undefined>;
+};
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export default function ViewAnnouncementPage({ params: _params, searchParams: _searchParams }: ViewAnnouncementPageProps) {
+  // We're using useParams hook to get params from route in a client component
   const params = useParams();
   const { announcement_id, camp_id } = params;
   const announcement =

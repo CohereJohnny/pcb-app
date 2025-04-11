@@ -10,9 +10,10 @@ import { Membership, User, Profile } from '@/types/dataModel';
 // Import the component itself
 import { RosterTable } from '@/components/features/roster/RosterTable';
 
-interface RosterPageProps {
+type RosterPageProps = {
   params: { camp_id: string };
-}
+  searchParams: Record<string, string | string[] | undefined>;
+};
 
 // Helper function to combine roster data
 function processRosterData(
@@ -40,7 +41,8 @@ function processRosterData(
 }
 
 // This page will be a Server Component by default
-export default async function RosterPage({ params }: RosterPageProps) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export default async function RosterPage({ params, searchParams }: RosterPageProps) {
   console.log('Roster Page - Camp ID:', params.camp_id);
 
   // Fetch and process mock data here

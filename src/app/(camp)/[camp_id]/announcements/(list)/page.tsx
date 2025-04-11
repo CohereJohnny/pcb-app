@@ -11,10 +11,10 @@ type AnnouncementsPageProps = {
   params: {
     camp_id: string;
   };
-  searchParams: Record<string, string | string[] | undefined>;
 }
 
-export default function AnnouncementsPage({ params, searchParams: _searchParams }: AnnouncementsPageProps) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export default function AnnouncementsPage({ params }: AnnouncementsPageProps) {
   // Get announcements from the Zustand store
   const announcements = useAnnouncementStore((state) => state.announcements);
 

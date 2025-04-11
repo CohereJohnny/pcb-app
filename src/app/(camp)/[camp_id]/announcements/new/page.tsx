@@ -3,8 +3,13 @@
 import React from 'react';
 import { AnnouncementForm } from '@/components/features/announcements/AnnouncementForm';
 
-// No props needed for this simple page
-export default function NewAnnouncementPage() {
+type NewAnnouncementPageProps = {
+  params: { camp_id: string };
+  searchParams: Record<string, string | string[] | undefined>;
+};
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export default function NewAnnouncementPage({ params, searchParams }: NewAnnouncementPageProps) {
   return (
     <div className="space-y-8">
       {/* Title could be part of the form header, but adding here for page context */}

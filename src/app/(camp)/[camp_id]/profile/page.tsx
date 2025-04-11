@@ -7,10 +7,12 @@ import { AccommodationForm } from '@/components/features/profile/AccommodationFo
 import { Separator } from '@/components/ui/separator';
 
 // Page receives params for dynamic routes
-interface ProfilePageProps {
+type ProfilePageProps = {
   params: { camp_id: string };
-}
+  searchParams: Record<string, string | string[] | undefined>;
+};
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function ProfilePage({ params }: ProfilePageProps) {
   console.log('Camp ID:', params.camp_id); // Log camp id from route
 
