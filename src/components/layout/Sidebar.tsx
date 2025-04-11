@@ -16,26 +16,39 @@ export function Sidebar({ className }: { className?: string }) {
   // Need to get campId context or param later for dynamic links
   const campId = 'mock-camp-123'; // Placeholder
 
+  // TODO: Add active link detection based on current pathname
+  // const pathname = usePathname(); // Requires 'use client'
+
   return (
     <aside
-      className={cn('hidden border-r md:flex md:w-60 md:flex-col', className)}
+      className={cn(
+        'hidden border-r border-border bg-background md:flex md:w-60 md:flex-col',
+        className
+      )}
     >
-      <div className="flex flex-col gap-2 px-4 py-6">
+      {/* Adjust padding for spacing */}
+      <div className="flex flex-col gap-4 px-4 py-6">
         <nav className="grid items-start gap-1">
-          {navItems.map((item) => (
-            <Link
-              key={item.label}
-              href={`/${campId}${item.href}`}
-              className={cn(
-                'group hover:bg-accent hover:text-accent-foreground flex items-center rounded-md px-3 py-2 text-sm font-medium',
-                // Add logic for active link later
-                'text-muted-foreground'
-              )}
-            >
-              {/* Add Icon placeholder later */}
-              <span>{item.label}</span>
-            </Link>
-          ))}
+          {navItems.map((item) => {
+            // const isActive = pathname?.startsWith(`/${campId}${item.href}`); // Example active check
+            const isActive = false; // Placeholder
+            return (
+              <Link
+                key={item.label}
+                href={`/${campId}${item.href}`}
+                className={cn(
+                  'group flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors',
+                  isActive
+                    ? 'bg-muted text-primary' // Style for active link (e.g., muted bg, primary text)
+                    : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground' // Default & hover
+                )}
+              >
+                {/* Icon Placeholder */}
+                {/* <Icon className="mr-2 h-4 w-4" /> */}
+                <span>{item.label}</span>
+              </Link>
+            );
+          })}
         </nav>
       </div>
     </aside>

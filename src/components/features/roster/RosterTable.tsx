@@ -89,14 +89,14 @@ export function RosterTable({ data }: RosterTableProps) {
   });
 
   return (
-    <div className="rounded-md border">
+    <div className="rounded-md border border-border">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
+            <TableRow key={headerGroup.id} className="border-border">
               {headerGroup.headers.map((header) => {
                 return (
-                  <TableHead key={header.id}>
+                  <TableHead key={header.id} className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -115,9 +115,10 @@ export function RosterTable({ data }: RosterTableProps) {
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && 'selected'}
+                className="border-border transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
+                  <TableCell key={cell.id} className="p-4 align-middle">
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}

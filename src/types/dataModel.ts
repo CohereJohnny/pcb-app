@@ -60,4 +60,16 @@ export interface Profile {
   name?: string; // Can duplicate from User for convenience if needed
 }
 
-// Note: Removed Announcements, Lists, ListItems for now as per Sprint 2 focus
+// Represents a camp-wide announcement
+export interface Announcement {
+  id: string; // Primary Key (UUID)
+  camp_id: string; // Foreign Key to Camp.id (for RLS)
+  created_at?: Date | string;
+  updated_at?: Date | string;
+  author_user_id: string; // Foreign Key to User.id
+  title: string;
+  content: string; // Potentially rich text / Markdown
+  // tags?: string[]; // Optional for future
+}
+
+// Note: Removed Lists, ListItems for now as per Sprint 2 focus

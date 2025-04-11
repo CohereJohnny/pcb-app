@@ -51,11 +51,13 @@ export default async function RosterPage({ params }: RosterPageProps) {
   );
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-semibold">Camp Roster</h1>
-      <p className="text-muted-foreground">
-        View the members registered for this camp.
-      </p>
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-3xl font-bold">Camp Roster</h1>
+        <p className="text-muted-foreground mt-2">
+          View the members registered for this camp.
+        </p>
+      </div>
       {/* Render RosterTable */}
       <RosterTable data={rosterData} />
     </div>

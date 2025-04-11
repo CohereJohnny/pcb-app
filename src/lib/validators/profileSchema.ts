@@ -11,17 +11,19 @@ export const profileFormSchema = z.object({
 export type ProfileFormData = z.infer<typeof profileFormSchema>;
 
 // --- Travel Itinerary Schema ---
-// Temporarily simplifying date handling to avoid type issues
-// const zDateOptional = z.preprocess((arg) => {
-//   if (!arg || typeof arg === 'string' && arg.trim() === '') return null;
-//   const date = new Date(arg as string);
-//   return isNaN(date.getTime()) ? null : date;
-// }, z.date().optional().nullable());
+// Proper date handling with preprocess
+const zDateOptional = z.preprocess((arg) => {
+  if (!arg || (typeof arg === 'string' && arg.trim() === '')) return null;
+  return arg instanceof Date ? arg : new Date(arg as string);
+}, z.date().optional().nullable().refine(
+  (date) => !date || !isNaN(date.getTime()),
+  { message: "Invalid date format" }
+));
 
 export const travelItinerarySchema = z.object({
-  arrival_date: z.string().optional().nullable(), // Treat as string for now
+  arrival_date: zDateOptional,
   arrival_time: z.string().optional().nullable(),
-  departure_date: z.string().optional().nullable(), // Treat as string for now
+  departure_date: zDateOptional,
   departure_time: z.string().optional().nullable(),
   mode_of_transport: z.string().optional().nullable(),
   origin: z.string().optional().nullable(),

@@ -15,10 +15,10 @@ export default function ProfilePage({ params }: ProfilePageProps) {
   console.log('Camp ID:', params.camp_id); // Log camp id from route
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-semibold">Your Profile</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-3xl font-bold">Your Profile</h1>
+        <p className="text-muted-foreground mt-2">
           Manage your personal, travel, and accommodation details.
         </p>
       </div>

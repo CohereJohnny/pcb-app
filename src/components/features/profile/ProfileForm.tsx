@@ -58,9 +58,9 @@ export function ProfileForm() {
           <CardTitle>Basic Information</CardTitle>
           <CardDescription>Your personal details.</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div className="space-y-1.5">
+        <CardContent className="space-y-6 pt-6">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <div className="space-y-2">
               <Label htmlFor="name">Legal Name</Label>
               <Input
                 id="name"
@@ -69,12 +69,12 @@ export function ProfileForm() {
               />
               {/* Display validation error */}
               {errors.name && (
-                <p className="text-destructive pt-1 text-sm font-medium">
+                <p className="text-sm font-medium text-destructive pt-1">
                   {errors.name.message}
                 </p>
               )}
             </div>
-            <div className="space-y-1.5">
+            <div className="space-y-2">
               <Label htmlFor="playa_name">Playa Name</Label>
               <Input
                 id="playa_name"
@@ -84,7 +84,7 @@ export function ProfileForm() {
               {/* No error display for optional field unless schema changes */}
             </div>
           </div>
-          <div className="space-y-1.5">
+          <div className="space-y-2">
             <Label htmlFor="contact_info">Contact Info</Label>
             <Input
               id="contact_info"
@@ -93,7 +93,7 @@ export function ProfileForm() {
             />
             {/* Add error display if schema requires format later */}
           </div>
-          <div className="space-y-1.5">
+          <div className="space-y-2">
             <Label htmlFor="emergency_contact">Emergency Contact</Label>
             <Input
               id="emergency_contact"
@@ -103,7 +103,7 @@ export function ProfileForm() {
             {/* Add error display if schema requires format later */}
           </div>
         </CardContent>
-        <CardFooter className="flex justify-end">
+        <CardFooter className="flex justify-end border-t border-border px-6 py-4">
           <Button type="submit" disabled={isSubmitting}>
             {' '}
             {/* Disable button while submitting */}

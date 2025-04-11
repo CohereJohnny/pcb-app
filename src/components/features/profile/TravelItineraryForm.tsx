@@ -3,6 +3,8 @@
 import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import {
   Card,
   CardHeader,
@@ -27,10 +29,11 @@ import {
   type TravelItineraryFormData,
 } from '@/lib/validators/profileSchema';
 
+// Parse date strings into Date objects for the mock data
 const MOCK_TRAVEL_DATA: Partial<TravelItineraryFormData> = {
-  arrival_date: '2024-08-27',
+  arrival_date: new Date('2024-08-27'),
   arrival_time: 'Afternoon',
-  departure_date: '2024-09-03',
+  departure_date: new Date('2024-09-03'),
   departure_time: 'Morning',
   mode_of_transport: 'Personal Vehicle',
   origin: 'San Francisco, CA',
@@ -46,7 +49,7 @@ export function TravelItineraryForm() {
     control,
     formState: { errors, isSubmitting },
   } = useForm<TravelItineraryFormData>({
-    resolver: zodResolver(travelItinerarySchema),
+    resolver: zodResolver(travelItinerarySchema) as any, // Type cast to fix resolver type issues
     defaultValues: {
       arrival_date: MOCK_TRAVEL_DATA.arrival_date ?? null,
       arrival_time: MOCK_TRAVEL_DATA.arrival_time ?? null,
@@ -61,7 +64,7 @@ export function TravelItineraryForm() {
   });
 
   const onSubmit = (data: TravelItineraryFormData) => {
-    console.log('Saving Travel Info (Dates as strings):', data);
+    console.log('Saving Travel Info (with proper Date objects):', data);
     // Simulate API call
     return new Promise((resolve) =>
       setTimeout(() => {
@@ -78,22 +81,33 @@ export function TravelItineraryForm() {
           <CardTitle>Travel Itinerary</CardTitle>
           <CardDescription>How are you getting to the Burn?</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div className="space-y-1.5">
+        <CardContent className="space-y-6 pt-6">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <div className="space-y-2">
               <Label htmlFor="arrival_date">Arrival Date</Label>
-              <Input
-                type="date"
-                id="arrival_date"
-                {...register('arrival_date')}
+              <Controller
+                control={control}
+                name="arrival_date"
+                render={({ field }) => (
+                  <div className="relative">
+                    <DatePicker
+                      id="arrival_date"
+                      selected={field.value}
+                      onChange={(date) => field.onChange(date)}
+                      placeholderText="Select arrival date"
+                      className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      dateFormat="yyyy-MM-dd"
+                    />
+                  </div>
+                )}
               />
               {errors.arrival_date && (
-                <p className="text-destructive pt-1 text-sm font-medium">
+                <p className="text-sm font-medium text-destructive pt-1">
                   {errors.arrival_date.message}
                 </p>
               )}
             </div>
-            <div className="space-y-1.5">
+            <div className="space-y-2">
               <Label htmlFor="arrival_time">Arrival Time (Approx)</Label>
               <Input
                 id="arrival_time"
@@ -102,13 +116,24 @@ export function TravelItineraryForm() {
               />
             </div>
           </div>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div className="space-y-1.5">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <div className="space-y-2">
               <Label htmlFor="departure_date">Departure Date</Label>
-              <Input
-                type="date"
-                id="departure_date"
-                {...register('departure_date')}
+              <Controller
+                control={control}
+                name="departure_date"
+                render={({ field }) => (
+                  <div className="relative">
+                    <DatePicker
+                      id="departure_date"
+                      selected={field.value}
+                      onChange={(date) => field.onChange(date)}
+                      placeholderText="Select departure date"
+                      className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      dateFormat="yyyy-MM-dd"
+                    />
+                  </div>
+                )}
               />
               {errors.departure_date && (
                 <p className="text-destructive pt-1 text-sm font-medium">

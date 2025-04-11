@@ -71,9 +71,9 @@ export function AccommodationForm() {
             What are your sleeping arrangements?
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div className="space-y-1.5">
+        <CardContent className="space-y-6 pt-6">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <div className="space-y-2">
               <Label htmlFor="type">Type</Label>
               <Input
                 id="type"
@@ -81,7 +81,7 @@ export function AccommodationForm() {
                 {...register('type')}
               />
             </div>
-            <div className="space-y-1.5">
+            <div className="space-y-2">
               <Label htmlFor="size_details">Size Details</Label>
               <Input
                 id="size_details"
@@ -90,8 +90,8 @@ export function AccommodationForm() {
               />
             </div>
           </div>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div className="flex items-center space-x-2 pt-1.5">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <div className="flex items-center space-x-2 pt-2">
               <Controller
                 name="power_needs"
                 control={control}
@@ -114,7 +114,7 @@ export function AccommodationForm() {
                 Need Camp Power?
               </Label>
             </div>
-            <div className="space-y-1.5">
+            <div className="space-y-2">
               <Label htmlFor="power_amps">Power Amps (if needed)</Label>
               <Input
                 type="number"
@@ -124,13 +124,13 @@ export function AccommodationForm() {
                 disabled={!powerNeedsValue}
               />
               {errors.power_amps && (
-                <p className="text-destructive pt-1 text-sm font-medium">
+                <p className="text-sm font-medium text-destructive pt-1">
                   {errors.power_amps.message}
                 </p>
               )}
             </div>
           </div>
-          <div className="space-y-1.5">
+          <div className="space-y-2">
             <Label htmlFor="sharing_with">Sharing With</Label>
             <Input
               id="sharing_with"
@@ -139,7 +139,7 @@ export function AccommodationForm() {
             />
           </div>
         </CardContent>
-        <CardFooter className="flex justify-end">
+        <CardFooter className="flex justify-end border-t border-border px-6 py-4">
           <Button type="submit" disabled={isSubmitting}>
             {isSubmitting ? 'Saving...' : 'Save Accommodation Info'}
           </Button>
