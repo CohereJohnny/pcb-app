@@ -11,6 +11,7 @@ type AnnouncementsPageProps = {
   params: {
     camp_id: string;
   };
+  searchParams: Record<string, string | string[] | undefined>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
