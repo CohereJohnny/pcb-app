@@ -28,6 +28,7 @@ import {
   travelItinerarySchema,
   type TravelItineraryFormData,
 } from '@/lib/validators/profileSchema';
+import { Resolver } from 'react-hook-form';
 
 // Parse date strings into Date objects for the mock data
 const MOCK_TRAVEL_DATA: Partial<TravelItineraryFormData> = {
@@ -49,7 +50,8 @@ export function TravelItineraryForm() {
     control,
     formState: { errors, isSubmitting },
   } = useForm<TravelItineraryFormData>({
-    resolver: zodResolver(travelItinerarySchema) as any, // Type cast to fix resolver type issues
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: zodResolver(travelItinerarySchema) as unknown as Resolver<TravelItineraryFormData, any>,
     defaultValues: {
       arrival_date: MOCK_TRAVEL_DATA.arrival_date ?? null,
       arrival_time: MOCK_TRAVEL_DATA.arrival_time ?? null,
