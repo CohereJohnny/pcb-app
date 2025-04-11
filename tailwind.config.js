@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
-const { fontFamily } = require("tailwindcss/defaultTheme")
+import { fontFamily } from "tailwindcss/defaultTheme";
+import tailwindAnimate from "tailwindcss-animate";
 
 module.exports = {
   darkMode: ["class"], // Ensure dark mode is enabled via class
@@ -77,5 +78,5 @@ module.exports = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")], // Keep existing plugin
+  plugins: [tailwindAnimate], // Keep existing plugin
 }

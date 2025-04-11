@@ -7,11 +7,14 @@ import { AnnouncementList } from '@/components/features/announcements/Announceme
 import { useAnnouncementStore } from '@/store/announcementStore';
 import { PlusCircle } from 'lucide-react'; // Icon for button
 
-interface AnnouncementsPageProps {
-  params: { camp_id: string };
+type AnnouncementsPageProps = {
+  params: {
+    camp_id: string;
+  };
+  searchParams: Record<string, string | string[] | undefined>;
 }
 
-export default function AnnouncementsPage({ params }: AnnouncementsPageProps) {
+export default function AnnouncementsPage({ params, searchParams }: AnnouncementsPageProps) {
   // Get announcements from the Zustand store
   const announcements = useAnnouncementStore((state) => state.announcements);
 
