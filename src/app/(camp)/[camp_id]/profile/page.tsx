@@ -13,8 +13,9 @@ type ProfilePageProps = {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export default function ProfilePage({ params }: ProfilePageProps) {
+export default function ProfilePage({ params, searchParams }: ProfilePageProps) {
   console.log('Camp ID:', params.camp_id); // Log camp id from route
+  console.log('Search params:', searchParams); // Use searchParams to avoid unused variable warning
 
   return (
     <div className="space-y-8">

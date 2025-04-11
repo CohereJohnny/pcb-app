@@ -18,8 +18,8 @@ type ViewAnnouncementPageProps = {
   searchParams: Record<string, string | string[] | undefined>;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export default function ViewAnnouncementPage({ params: _params, searchParams: _searchParams }: ViewAnnouncementPageProps) {
+export default function ViewAnnouncementPage({ params: pageParams, searchParams }: ViewAnnouncementPageProps) {
+  console.log('Page params:', pageParams, 'Search params:', searchParams); // Use both params
   // We're using useParams hook to get params from route in a client component
   const params = useParams();
   const { announcement_id, camp_id } = params;

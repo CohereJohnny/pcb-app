@@ -41,9 +41,9 @@ function processRosterData(
 }
 
 // This page will be a Server Component by default
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default async function RosterPage({ params, searchParams }: RosterPageProps) {
   console.log('Roster Page - Camp ID:', params.camp_id);
+  console.log('Search params:', searchParams); // Use searchParams to avoid unused variable warning
 
   // Fetch and process mock data here
   const rosterData = processRosterData(

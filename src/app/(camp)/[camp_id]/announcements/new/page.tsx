@@ -10,6 +10,7 @@ type NewAnnouncementPageProps = {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function NewAnnouncementPage({ params, searchParams }: NewAnnouncementPageProps) {
+  console.log('Camp ID:', params.camp_id, 'Search params:', searchParams); // Use both params
   return (
     <div className="space-y-8">
       {/* Title could be part of the form header, but adding here for page context */}

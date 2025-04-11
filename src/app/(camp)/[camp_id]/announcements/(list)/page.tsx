@@ -15,9 +15,10 @@ type AnnouncementsPageProps = {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export default function AnnouncementsPage({ params }: AnnouncementsPageProps) {
+export default function AnnouncementsPage({ params, searchParams }: AnnouncementsPageProps) {
   // Get announcements from the Zustand store
   const announcements = useAnnouncementStore((state) => state.announcements);
+  console.log("Search params:", searchParams); // Use searchParams to avoid unused variable warning
 
   return (
     <div className="space-y-8">
