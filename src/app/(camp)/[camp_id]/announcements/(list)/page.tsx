@@ -14,7 +14,7 @@ type AnnouncementsPageProps = {
   searchParams: Record<string, string | string[] | undefined>;
 }
 
-export default function AnnouncementsPage({ params, searchParams }: AnnouncementsPageProps) {
+export default function AnnouncementsPage({ params, searchParams: _searchParams }: AnnouncementsPageProps) {
   // Get announcements from the Zustand store
   const announcements = useAnnouncementStore((state) => state.announcements);
 
