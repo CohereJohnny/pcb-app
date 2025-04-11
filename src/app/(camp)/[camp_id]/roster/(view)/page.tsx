@@ -11,8 +11,8 @@ import { Membership, User, Profile } from '@/types/dataModel';
 import { RosterTable } from '@/components/features/roster/RosterTable';
 
 type RosterPageProps = {
-  params: { camp_id: string };
-  searchParams: Record<string, string | string[] | undefined>;
+  params: Promise<{ camp_id: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
 // Helper function to combine roster data
@@ -41,7 +41,12 @@ function processRosterData(
 }
 
 // This page will be a Server Component by default
-export default async function RosterPage({ params, searchParams }: RosterPageProps) {
+export default async function RosterPage({
+  params: pageParamsPromise,
+  searchParams: searchParamsPromise,
+}: RosterPageProps) {
+  const params = await pageParamsPromise;
+  const searchParams = await searchParamsPromise;
   console.log('Roster Page - Camp ID:', params.camp_id);
   console.log('Search params:', searchParams); // Use searchParams to avoid unused variable warning
 

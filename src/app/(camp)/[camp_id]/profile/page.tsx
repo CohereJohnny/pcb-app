@@ -8,12 +8,16 @@ import { Separator } from '@/components/ui/separator';
 
 // Page receives params for dynamic routes
 type ProfilePageProps = {
-  params: { camp_id: string };
-  searchParams: Record<string, string | string[] | undefined>;
+  params: Promise<{ camp_id: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export default function ProfilePage({ params, searchParams }: ProfilePageProps) {
+export default async function ProfilePage({
+  params: pageParamsPromise,
+  searchParams: searchParamsPromise,
+}: ProfilePageProps) {
+  const params = await pageParamsPromise;
+  const searchParams = await searchParamsPromise;
   console.log('Camp ID:', params.camp_id); // Log camp id from route
   console.log('Search params:', searchParams); // Use searchParams to avoid unused variable warning
 

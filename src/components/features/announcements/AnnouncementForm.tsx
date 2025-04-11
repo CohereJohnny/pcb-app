@@ -3,115 +3,104 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { useRouter } from 'next/navigation'; // For redirecting
-
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-} from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea'; // Use Textarea for content
+import * as z from 'zod';
 import { Button } from '@/components/ui/button';
-import { useAnnouncementStore } from '@/store/announcementStore'; // Import store hook
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useRouter } from 'next/navigation';
+import { useAnnouncementStore } from '@/store/announcementStore';
 
-// Define Zod schema for the form
-export const announcementSchema = z.object({
-  title: z.string().min(3, { message: 'Title must be at least 3 characters long.' }),
-  content: z.string().min(10, { message: 'Content must be at least 10 characters long.' }),
-  // author_user_id will be added implicitly or based on auth state
+const announcementSchema = z.object({
+  title: z.string().min(1, 'Title is required'),
+  content: z.string().min(1, 'Content is required'),
 });
 
-export type AnnouncementFormData = z.infer<typeof announcementSchema>;
+type AnnouncementFormData = z.infer<typeof announcementSchema>;
 
-export function AnnouncementForm() {
+interface AnnouncementFormProps {
+  campId: string;
+}
+
+export function AnnouncementForm({ campId }: AnnouncementFormProps) {
   const router = useRouter();
-  const addAnnouncement = useAnnouncementStore((state) => state.addAnnouncement);
+  const addAnnouncement = useAnnouncementStore(
+    (state) => state.addAnnouncement
+  );
+
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    reset, // To clear form after submission
   } = useForm<AnnouncementFormData>({
     resolver: zodResolver(announcementSchema),
-    defaultValues: {
-      title: '',
-      content: '',
-    },
   });
 
   const onSubmit = async (data: AnnouncementFormData) => {
-    console.log('Submitting announcement:', data);
     try {
-      // Get current user ID (using placeholder for now)
-      const currentUserId = 'user-123'; // Replace with actual auth user ID later
+      // Add announcement to store
+      addAnnouncement({
+        title: data.title,
+        content: data.content,
+        author_user_id: 'user-123', // Mock user ID
+        camp_id: campId,
+      });
 
-      // Add to store (simulate saving)
-      addAnnouncement({ ...data, author_user_id: currentUserId });
-
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      console.log('Announcement added successfully.');
-      reset(); // Clear the form
-
-      // Redirect back to the announcements list page
-      // Need to get campId dynamically later
-      const campId = 'mock-camp-123';
+      // Redirect back to announcements list
       router.push(`/${campId}/announcements`);
     } catch (error) {
-      console.error('Failed to add announcement:', error);
-      // TODO: Show error message to user
+      console.error('Failed to create announcement:', error);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <Card>
-        <CardHeader>
-          <CardTitle>New Announcement</CardTitle>
-          <CardDescription>Share something with the camp.</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6 pt-6">
+    <Card>
+      <CardHeader>
+        <CardTitle>New Announcement</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="title">Title</Label>
             <Input
-              id="title"
-              placeholder="Enter the announcement title"
+              placeholder="Title"
               {...register('title')}
+              aria-invalid={errors.title ? 'true' : 'false'}
             />
             {errors.title && (
-              <p className="text-sm font-medium text-destructive pt-1">
+              <p className="text-destructive text-sm font-medium">
                 {errors.title.message}
               </p>
             )}
           </div>
+
           <div className="space-y-2">
-            <Label htmlFor="content">Content</Label>
             <Textarea
-              id="content"
-              placeholder="Write your announcement here..."
+              placeholder="Content"
               {...register('content')}
-              rows={6} // Give more space for content
+              rows={6}
+              aria-invalid={errors.content ? 'true' : 'false'}
             />
             {errors.content && (
-              <p className="text-sm font-medium text-destructive pt-1">
+              <p className="text-destructive text-sm font-medium">
                 {errors.content.message}
               </p>
             )}
           </div>
-        </CardContent>
-        <CardFooter className="flex justify-end border-t border-border px-6 py-4">
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? 'Posting...' : 'Post Announcement'}
-          </Button>
-        </CardFooter>
-      </Card>
-    </form>
+
+          <div className="flex justify-end gap-4">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => router.push(`/${campId}/announcements`)}
+            >
+              Cancel
+            </Button>
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? 'Creating...' : 'Create Announcement'}
+            </Button>
+          </div>
+        </form>
+      </CardContent>
+    </Card>
   );
-} 
+}
