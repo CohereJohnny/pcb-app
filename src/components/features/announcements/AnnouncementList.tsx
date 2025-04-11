@@ -6,12 +6,16 @@ import { AnnouncementCard } from './AnnouncementCard';
 
 interface AnnouncementListProps {
   announcements: Announcement[];
+  campId: string; // Required by AnnouncementCard for linking
 }
 
-export function AnnouncementList({ announcements }: AnnouncementListProps) {
+export function AnnouncementList({
+  announcements,
+  campId,
+}: AnnouncementListProps) {
   if (!announcements || announcements.length === 0) {
     return (
-      <div className="text-center text-muted-foreground py-8">
+      <div className="text-muted-foreground py-8 text-center">
         No announcements posted yet.
       </div>
     );
@@ -20,8 +24,12 @@ export function AnnouncementList({ announcements }: AnnouncementListProps) {
   return (
     <div className="space-y-4">
       {announcements.map((announcement) => (
-        <AnnouncementCard key={announcement.id} announcement={announcement} />
+        <AnnouncementCard
+          key={announcement.id}
+          announcement={announcement}
+          campId={campId}
+        />
       ))}
     </div>
   );
-} 
+}

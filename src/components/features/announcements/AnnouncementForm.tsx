@@ -1,106 +1,127 @@
 'use client';
 
-import React from 'react';
-import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
+import { useForm } from 'react-hook-form';
+import { v4 as uuidv4 } from 'uuid'; // To generate unique IDs for mock data
+
 import { Button } from '@/components/ui/button';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useRouter } from 'next/navigation';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from '@/components/ui/card';
+import {
+  announcementSchema,
+  AnnouncementFormData,
+} from '@/lib/validators/announcements';
 import { useAnnouncementStore } from '@/store/announcementStore';
-
-const announcementSchema = z.object({
-  title: z.string().min(1, 'Title is required'),
-  content: z.string().min(1, 'Content is required'),
-});
-
-type AnnouncementFormData = z.infer<typeof announcementSchema>;
+import { Announcement } from '@/types/dataModel';
 
 interface AnnouncementFormProps {
   campId: string;
+  authorUserId: string;
+  onSuccess?: () => void; // Optional callback for successful submission
 }
 
-export function AnnouncementForm({ campId }: AnnouncementFormProps) {
-  const router = useRouter();
+export function AnnouncementForm({
+  campId,
+  authorUserId,
+  onSuccess,
+}: AnnouncementFormProps) {
   const addAnnouncement = useAnnouncementStore(
     (state) => state.addAnnouncement
   );
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<AnnouncementFormData>({
+  const form = useForm<AnnouncementFormData>({
     resolver: zodResolver(announcementSchema),
+    defaultValues: {
+      title: '',
+      content: '',
+    },
   });
 
-  const onSubmit = async (data: AnnouncementFormData) => {
-    try {
-      // Add announcement to store
-      addAnnouncement({
-        title: data.title,
-        content: data.content,
-        author_user_id: 'user-123', // Mock user ID
-        camp_id: campId,
-      });
+  async function onSubmit(values: AnnouncementFormData) {
+    // Simulate network delay
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
-      // Redirect back to announcements list
-      router.push(`/${campId}/announcements`);
-    } catch (error) {
-      console.error('Failed to create announcement:', error);
-    }
-  };
+    const newAnnouncement: Announcement = {
+      id: uuidv4(), // Generate a unique ID for the mock announcement
+      camp_id: campId,
+      author_user_id: authorUserId,
+      title: values.title,
+      content: values.content,
+      created_at: new Date().toISOString(), // Set current date/time
+      updated_at: new Date().toISOString(),
+    };
+
+    addAnnouncement(newAnnouncement);
+    form.reset(); // Reset form after submission
+    onSuccess?.(); // Call the success callback if provided
+  }
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>New Announcement</CardTitle>
+        <CardTitle>Create New Announcement</CardTitle>
       </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="space-y-2">
-            <Input
-              placeholder="Title"
-              {...register('title')}
-              aria-invalid={errors.title ? 'true' : 'false'}
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <CardContent className="space-y-4">
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Title</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter announcement title..."
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-            {errors.title && (
-              <p className="text-destructive text-sm font-medium">
-                {errors.title.message}
-              </p>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <Textarea
-              placeholder="Content"
-              {...register('content')}
-              rows={6}
-              aria-invalid={errors.content ? 'true' : 'false'}
+            <FormField
+              control={form.control}
+              name="content"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Content</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Enter announcement content..."
+                      className="min-h-[100px] resize-y"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-            {errors.content && (
-              <p className="text-destructive text-sm font-medium">
-                {errors.content.message}
-              </p>
-            )}
-          </div>
-
-          <div className="flex justify-end gap-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => router.push(`/${campId}/announcements`)}
-            >
-              Cancel
+          </CardContent>
+          <CardFooter>
+            <Button type="submit" disabled={form.formState.isSubmitting}>
+              {form.formState.isSubmitting
+                ? 'Creating...'
+                : 'Create Announcement'}
             </Button>
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'Creating...' : 'Create Announcement'}
-            </Button>
-          </div>
+          </CardFooter>
         </form>
-      </CardContent>
+      </Form>
     </Card>
   );
 }
