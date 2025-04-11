@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Announcement } from '@/types/dataModel';
+import { getMockAuthorName } from '@/lib/mockData/announcements'; // Corrected function name
 import {
   Card,
   CardHeader,
@@ -10,43 +11,52 @@ import {
   CardDescription,
   CardContent,
 } from '@/components/ui/card';
-import { getMockAuthorName } from '@/lib/mockData/announcements'; // Helper to get author name
-import { format } from 'date-fns'; // For formatting dates
 
 interface AnnouncementCardProps {
   announcement: Announcement;
+  campId: string; // Needed to construct the link URL
 }
 
-// Function to truncate content for preview
-function truncateContent(content: string, maxLength = 100): string {
-  if (content.length <= maxLength) {
-    return content;
-  }
-  return content.substring(0, maxLength) + '...';
-}
+const MAX_SNIPPET_LENGTH = 150;
 
-export function AnnouncementCard({ announcement }: AnnouncementCardProps) {
-  const authorName = getMockAuthorName(announcement.author_user_id) || 'Camp Staff';
+export function AnnouncementCard({
+  announcement,
+  campId,
+}: AnnouncementCardProps) {
+  const authorName =
+    getMockAuthorName(announcement.author_user_id) || 'Unknown Author';
+
+  // Handle potentially undefined created_at
   const formattedDate = announcement.created_at
-    ? format(new Date(announcement.created_at), 'MMM d, yyyy')
+    ? new Date(announcement.created_at).toLocaleDateString()
     : 'Date unknown';
 
+  const contentSnippet =
+    announcement.content.length > MAX_SNIPPET_LENGTH
+      ? `${announcement.content.substring(0, MAX_SNIPPET_LENGTH)}...`
+      : announcement.content;
+
+  // Corrected link path (route groups are not part of the URL path)
+  const href = `/${campId}/announcements/${announcement.id}`;
+
   return (
-    // Link wrapping the card to the detail page
-    <Link href={`./${announcement.id}`} className="block group">
-      <Card className="transition-colors group-hover:bg-muted/50">
+    <Link
+      href={href}
+      className="hover:bg-muted/50 block rounded-lg transition-colors"
+    >
+      <Card className="h-full border-0 bg-transparent shadow-none">
+        {' '}
+        {/* Minimal styling */}
         <CardHeader>
           <CardTitle>{announcement.title}</CardTitle>
-          <CardDescription className="text-xs">
+          <CardDescription>
             By {authorName} on {formattedDate}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">
-            {truncateContent(announcement.content)}
-          </p>
+          <p className="text-muted-foreground text-sm">{contentSnippet}</p>
         </CardContent>
       </Card>
     </Link>
   );
-} 
+}

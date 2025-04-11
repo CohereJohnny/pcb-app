@@ -26,3 +26,6 @@ export const useAnnouncementStore = create<AnnouncementStore>((set) => ({
     }));
   },
 }));
+
+// Helper to generate UUIDs if needed later
+// import { v4 as uuidv4 } from 'uuid';
