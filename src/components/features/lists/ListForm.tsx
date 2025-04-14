@@ -33,6 +33,7 @@ import { listSchema, ListFormData } from '@/lib/validators/lists';
 import { useListStore } from '@/store/listStore';
 import { List } from '@/types/dataModel';
 import { listTypeOptions } from '@/lib/constants/listTypes'; // Import options
+import { Lightbulb } from 'lucide-react'; // Import icon
 
 interface ListFormProps {
   campId: string;
@@ -74,7 +75,18 @@ export function ListForm({ campId, authorUserId, onSuccess }: ListFormProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Create New List</CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle>Create New List</CardTitle>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => console.log('Suggest List Items clicked')}
+          >
+            <Lightbulb className="mr-1 h-4 w-4" />
+            Suggest Items
+          </Button>
+        </div>
       </CardHeader>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">

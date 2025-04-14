@@ -17,6 +17,7 @@ import {
 import { listItemSchema, ListItemFormData } from '@/lib/validators/lists';
 import { useListStore } from '@/store/listStore';
 import { ListItem } from '@/types/dataModel';
+import { Lightbulb } from 'lucide-react';
 
 interface AddItemFormProps {
   listId: string;
@@ -70,6 +71,16 @@ export function AddItemForm({ listId }: AddItemFormProps) {
             </FormItem>
           )}
         />
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className="flex-shrink-0"
+          onClick={() => console.log('Suggest List Item clicked')}
+        >
+          <Lightbulb className="h-4 w-4" />
+          <span className="sr-only">Suggest Item</span>
+        </Button>
         <Button
           type="submit"
           size="sm"
