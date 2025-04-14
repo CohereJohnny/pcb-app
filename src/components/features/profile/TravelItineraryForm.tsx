@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, Resolver, FieldValues } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -28,7 +28,6 @@ import {
   travelItinerarySchema,
   type TravelItineraryFormData,
 } from '@/lib/validators/profileSchema';
-import { Resolver } from 'react-hook-form';
 
 // Parse date strings into Date objects for the mock data
 const MOCK_TRAVEL_DATA: Partial<TravelItineraryFormData> = {
@@ -51,7 +50,7 @@ export function TravelItineraryForm() {
     formState: { errors, isSubmitting },
   } = useForm<TravelItineraryFormData>({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolver: zodResolver(travelItinerarySchema) as unknown as Resolver<TravelItineraryFormData, any>,
+    resolver: zodResolver(travelItinerarySchema) as unknown as Resolver<TravelItineraryFormData, FieldValues>,
     defaultValues: {
       arrival_date: MOCK_TRAVEL_DATA.arrival_date ?? null,
       arrival_time: MOCK_TRAVEL_DATA.arrival_time ?? null,
@@ -65,12 +64,12 @@ export function TravelItineraryForm() {
     },
   });
 
-  const onSubmit = (data: TravelItineraryFormData) => {
-    console.log('Saving Travel Info (with proper Date objects):', data);
+  const onSubmit = (/* data: TravelItineraryFormData */) => {
+    // console.log('Saving Travel Info (with proper Date objects):', data);
     // Simulate API call
     return new Promise((resolve) =>
       setTimeout(() => {
-        console.log('Mock save complete.');
+        // console.log('Mock save complete.');
         resolve(void 0);
       }, 1000)
     );

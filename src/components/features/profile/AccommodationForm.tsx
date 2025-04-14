@@ -49,14 +49,11 @@ export function AccommodationForm() {
 
   const powerNeedsValue = watch('power_needs');
 
-  const onSubmit = (data: AccommodationFormData) => {
-    const submissionData = data.power_needs
-      ? data
-      : { ...data, power_amps: null };
-    console.log('Saving Accommodation Info:', submissionData);
+  const onSubmit = (/* data: AccommodationFormData */) => {
+    // const submissionData = data.power_needs
+    //   ? data
     return new Promise<void>((resolve) =>
       setTimeout(() => {
-        console.log('Mock save complete.');
         resolve();
       }, 1000)
     );

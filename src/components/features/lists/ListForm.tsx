@@ -81,7 +81,7 @@ export function ListForm({ campId, authorUserId, onSuccess }: ListFormProps) {
             type="button"
             variant="ghost"
             size="sm"
-            onClick={() => console.log('Suggest List Items clicked')}
+            onClick={() => { /* console.log('Suggest List Items clicked') */ }}
           >
             <Lightbulb className="mr-1 h-4 w-4" />
             Suggest Items

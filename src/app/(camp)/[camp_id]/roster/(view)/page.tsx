@@ -5,7 +5,6 @@ import { useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   RosterTable,
-  RosterMember,
 } from '@/components/features/roster/RosterTable';
 // Import mock data directly
 import {
@@ -13,38 +12,7 @@ import {
   mockRosterUsers,
   mockRosterProfiles,
 } from '@/lib/mockData/roster';
-import { Membership, User, Profile } from '@/types/dataModel';
-
-// Helper function to combine mock roster data
-// (Could be moved to a util file later)
-function processRosterData(
-  memberships: Membership[],
-  users: User[],
-  profiles: Partial<Profile>[]
-): RosterMember[] {
-  const userMap = new Map(users.map((u) => [u.id, u]));
-  const profileMap = new Map(profiles.map((p) => [p.user_id, p]));
-
-  return memberships.map((membership) => {
-    const user = userMap.get(membership.user_id);
-    const profile = profileMap.get(membership.user_id);
-
-    // Basic profile info even if partial mock profile is missing
-    const basicProfile = profile || { user_id: membership.user_id };
-
-    return {
-      user_id: membership.user_id,
-      name: user?.name,
-      playa_name: basicProfile?.playa_name,
-      role: membership.role,
-      // Safely access nested properties
-      arrival_date: basicProfile?.travel_itinerary?.arrival_date?.toString(),
-      departure_date:
-        basicProfile?.travel_itinerary?.departure_date?.toString(),
-      accommodation_type: basicProfile?.accommodation_details?.type,
-    };
-  });
-}
+import { processRosterData } from '@/lib/utils';
 
 export default function RosterViewPage() {
   const params = useParams();
@@ -62,9 +30,9 @@ export default function RosterViewPage() {
     );
   }, [campId]); // Recalculate if campId changes (though it won't with current setup)
 
+  // Placeholder action handler
   const handleInvite = () => {
-    // Placeholder action for MVP
-    console.log(`Invite action triggered for camp: ${campId}`);
+    // console.log(`Invite action triggered for camp: ${campId}`);
     alert('Invite Member functionality not implemented yet.');
   };
 
