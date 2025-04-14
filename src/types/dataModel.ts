@@ -72,4 +72,30 @@ export interface Announcement {
   // tags?: string[]; // Optional for future
 }
 
+// Represents a collaborative list (e.g., Shopping, Tasks)
+export interface List {
+  id: string; // Primary Key (UUID)
+  camp_id: string; // Foreign Key to Camp.id
+  created_by_user_id: string; // Foreign Key to User.id
+  title: string;
+  description?: string | null;
+  type: string; // e.g., 'SHOPPING', 'TASK', 'GENERAL' - defined in constants
+  created_at?: Date | string;
+  updated_at?: Date | string;
+}
+
+// Represents an item within a List
+export interface ListItem {
+  id: string; // Primary Key (UUID)
+  list_id: string; // Foreign Key to List.id
+  content: string;
+  is_complete: boolean;
+  created_at?: Date | string;
+  updated_at?: Date | string;
+  // Task-specific fields (added in Sprint 9)
+  assignee_user_id?: string | null;
+  due_date?: Date | string | null;
+  status?: string | null; // e.g., 'TODO', 'IN_PROGRESS', 'DONE' - defined in constants
+}
+
 // Note: Removed Lists, ListItems for now as per Sprint 2 focus

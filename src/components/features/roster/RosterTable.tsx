@@ -17,6 +17,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Role } from '@/types/dataModel';
+import { Button } from '@/components/ui/button';
 
 // Define a combined type for the roster data passed to the table
 export interface RosterMember {
@@ -28,6 +29,16 @@ export interface RosterMember {
   departure_date?: string | null; // From Profile.travel_itinerary
   accommodation_type?: string | null; // From Profile.accommodation_details
 }
+
+// Placeholder action handlers
+const handleEditRole = (userId: string) => {
+  console.log('Edit Role action for:', userId);
+  alert(`Edit Role for ${userId} (not implemented)`);
+};
+const handleRemoveMember = (userId: string) => {
+  console.log('Remove Member action for:', userId);
+  alert(`Remove Member ${userId} (not implemented)`);
+};
 
 // Define table columns
 export const columns: ColumnDef<RosterMember>[] = [
@@ -75,6 +86,34 @@ export const columns: ColumnDef<RosterMember>[] = [
         <span className="text-muted-foreground">N/A</span>
       ),
   },
+  {
+    id: 'actions',
+    cell: ({ row }) => {
+      const member = row.original;
+      // Simple buttons for now
+      return (
+        <div className="flex justify-end gap-1">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => handleEditRole(member.user_id)}
+          >
+            Edit Role
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-destructive hover:text-destructive"
+            onClick={() => handleRemoveMember(member.user_id)}
+          >
+            Remove
+          </Button>
+        </div>
+      );
+    },
+    header: () => <div className="text-right">Actions</div>,
+    size: 100,
+  },
 ];
 
 interface RosterTableProps {
@@ -89,14 +128,17 @@ export function RosterTable({ data }: RosterTableProps) {
   });
 
   return (
-    <div className="rounded-md border border-border">
+    <div className="border-border rounded-md border">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="border-border">
               {headerGroup.headers.map((header) => {
                 return (
-                  <TableHead key={header.id} className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
+                  <TableHead
+                    key={header.id}
+                    className="text-muted-foreground h-12 px-4 text-left align-middle font-medium"
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -115,7 +157,7 @@ export function RosterTable({ data }: RosterTableProps) {
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && 'selected'}
-                className="border-border transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+                className="border-border hover:bg-muted/50 data-[state=selected]:bg-muted transition-colors"
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id} className="p-4 align-middle">

@@ -1,6 +1,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
+import { useMemo } from 'react';
 import { useAnnouncementStore } from '@/store/announcementStore';
 import { AnnouncementList } from '@/components/features/announcements/AnnouncementList';
 import { Button } from '@/components/ui/button';
@@ -10,10 +11,13 @@ export default function AnnouncementsListPage() {
   const params = useParams();
   const campId = params.camp_id as string; // Assuming camp_id is always present
 
-  // Fetch announcements for the current camp from the store
-  const announcements = useAnnouncementStore((state) =>
-    state.announcements.filter((ann) => ann.camp_id === campId)
-  );
+  // Select the entire announcements array from the store
+  const allAnnouncements = useAnnouncementStore((state) => state.announcements);
+
+  // Compute the filtered announcements using useMemo
+  const announcements = useMemo(() => {
+    return allAnnouncements.filter((ann) => ann.camp_id === campId);
+  }, [allAnnouncements, campId]); // Dependencies: allAnnouncements array and campId
 
   const newAnnouncementHref = `/${campId}/announcements/new`;
 

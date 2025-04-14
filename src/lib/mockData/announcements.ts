@@ -6,7 +6,7 @@ import { mockRosterUsers } from './roster'; // Assuming roster mock exists for a
 const MOCK_CAMP_ID = 'mock-camp-123';
 
 // Helper function for past dates
-function getPastDate(daysAgo: number): string {
+export function getPastDate(daysAgo: number): string {
   const date = new Date();
   date.setDate(date.getDate() - daysAgo);
   return date.toISOString();
@@ -51,4 +51,4 @@ const userMap = new Map(mockRosterUsers.map((u) => [u.id, u.name]));
 
 export function getMockAuthorName(userId: string): string | undefined {
   return userMap.get(userId);
-} 
+}
