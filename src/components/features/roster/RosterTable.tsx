@@ -18,6 +18,14 @@ import {
 } from '@/components/ui/table';
 import { Role } from '@/types/dataModel';
 import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { MoreHorizontal } from "lucide-react";
 
 // Define a combined type for the roster data passed to the table
 export interface RosterMember {
@@ -29,16 +37,6 @@ export interface RosterMember {
   departure_date?: string | null; // From Profile.travel_itinerary
   accommodation_type?: string | null; // From Profile.accommodation_details
 }
-
-// Placeholder action handlers
-const handleEditRole = (userId: string) => {
-  console.log('Edit Role action for:', userId);
-  alert(`Edit Role for ${userId} (not implemented)`);
-};
-const handleRemoveMember = (userId: string) => {
-  console.log('Remove Member action for:', userId);
-  alert(`Remove Member ${userId} (not implemented)`);
-};
 
 // Define table columns
 export const columns: ColumnDef<RosterMember>[] = [
@@ -90,25 +88,36 @@ export const columns: ColumnDef<RosterMember>[] = [
     id: 'actions',
     cell: ({ row }) => {
       const member = row.original;
-      // Simple buttons for now
+
       return (
-        <div className="flex justify-end gap-1">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => handleEditRole(member.user_id)}
-          >
-            Edit Role
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-destructive hover:text-destructive"
-            onClick={() => handleRemoveMember(member.user_id)}
-          >
-            Remove
-          </Button>
-        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Open menu</span>
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuItem
+              onClick={() => {
+                // Placeholder action
+                alert(`Edit Role for ${member.user_id} (not implemented).`);
+              }}
+            >
+              Edit Role
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="text-destructive focus:text-destructive focus:bg-destructive/10"
+              onClick={() => {
+                // Placeholder action
+                alert(`Remove Member ${member.user_id} (not implemented).`);
+              }}
+            >
+              Remove Member
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       );
     },
     header: () => <div className="text-right">Actions</div>,

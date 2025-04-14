@@ -76,7 +76,7 @@ export function AddItemForm({ listId }: AddItemFormProps) {
           variant="ghost"
           size="icon"
           className="flex-shrink-0"
-          onClick={() => console.log('Suggest List Item clicked')}
+          onClick={() => { /* console.log('Suggest List Item clicked') */ }}
         >
           <Lightbulb className="h-4 w-4" />
           <span className="sr-only">Suggest Item</span>
@@ -86,7 +86,7 @@ export function AddItemForm({ listId }: AddItemFormProps) {
           size="sm"
           disabled={form.formState.isSubmitting || !form.formState.isValid}
         >
-          Add Item
+          {form.formState.isSubmitting ? 'Adding...' : 'Add Item'}
         </Button>
       </form>
     </Form>

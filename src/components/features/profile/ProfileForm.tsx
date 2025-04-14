@@ -38,13 +38,13 @@ export function ProfileForm() {
   });
 
   // Updated onSubmit to accept validated data
-  const onSubmit = (data: ProfileFormData) => {
-    console.log('Saving Profile:', data);
+  const onSubmit = (/* data: ProfileFormData */) => {
+    // console.log('Saving Profile:', data);
     // Simulate API call
     return new Promise((resolve) =>
       setTimeout(() => {
         // TODO: Update mock context or local state here (in a real scenario, call API)
-        console.log('Mock save complete.');
+        // console.log('Mock save complete.');
         resolve(void 0);
       }, 1000)
     );

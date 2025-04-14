@@ -53,9 +53,9 @@ export function AiConfigForm() {
     },
   });
 
-  function onSubmit(values: AiConfigFormData) {
+  function onSubmit(/* values: AiConfigFormData */) {
     // Placeholder action
-    console.log('Save AI Settings clicked:', values);
+    // console.log('Save AI Settings clicked:', values);
     alert('Saving AI settings is not implemented in this mock UI.');
     // IMPORTANT: Never actually save/handle real API keys in frontend code.
     // This data would typically be sent securely to a backend.
@@ -142,7 +142,7 @@ export function AiConfigForm() {
             {' '}
             {/* Separate CardContent for Button to avoid large spacing */}
             <Button type="submit" disabled={form.formState.isSubmitting}>
-              Save Settings (Mock)
+              {form.formState.isSubmitting ? 'Saving...' : 'Save Settings (Mock)'}
             </Button>
           </CardContent>
         </form>
