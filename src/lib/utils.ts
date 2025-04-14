@@ -7,7 +7,16 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-// Helper function to combine mock roster data
+/**
+ * Processes raw mock data arrays into a structured format suitable for the RosterTable.
+ *
+ * Combines membership info with corresponding user and profile details.
+ *
+ * @param memberships - Array of Membership objects.
+ * @param users - Array of User objects.
+ * @param profiles - Array of partial Profile objects (can be incomplete in mock data).
+ * @returns An array of RosterMember objects ready for display.
+ */
 export function processRosterData(
   memberships: Membership[],
   users: User[],
@@ -20,15 +29,15 @@ export function processRosterData(
     const user = userMap.get(membership.user_id);
     const profile = profileMap.get(membership.user_id);
 
-    // Basic profile info even if partial mock profile is missing
+    // Handle cases where mock profile data might be missing for a user
     const basicProfile = profile || { user_id: membership.user_id };
 
     return {
       user_id: membership.user_id,
-      name: user?.name,
+      name: user?.name, // Use optional chaining for safety
       playa_name: basicProfile?.playa_name,
       role: membership.role,
-      // Safely access nested properties
+      // Safely access potentially nested/missing properties from partial profiles
       arrival_date: basicProfile?.travel_itinerary?.arrival_date?.toString(),
       departure_date:
         basicProfile?.travel_itinerary?.departure_date?.toString(),

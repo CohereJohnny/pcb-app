@@ -3,9 +3,7 @@
 import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
 import { Button } from '@/components/ui/button';
-import {
-  RosterTable,
-} from '@/components/features/roster/RosterTable';
+import { RosterTable } from '@/components/features/roster/RosterTable';
 // Import mock data directly
 import {
   mockMemberships,
@@ -32,7 +30,6 @@ export default function RosterViewPage() {
 
   // Placeholder action handler
   const handleInvite = () => {
-    // console.log(`Invite action triggered for camp: ${campId}`);
     alert('Invite Member functionality not implemented yet.');
   };
 

@@ -38,13 +38,11 @@ export function ProfileForm() {
   });
 
   // Updated onSubmit to accept validated data
-  const onSubmit = (/* data: ProfileFormData */) => {
-    // console.log('Saving Profile:', data);
+  const onSubmit = () => {
     // Simulate API call
     return new Promise((resolve) =>
       setTimeout(() => {
         // TODO: Update mock context or local state here (in a real scenario, call API)
-        // console.log('Mock save complete.');
         resolve(void 0);
       }, 1000)
     );
@@ -69,7 +67,7 @@ export function ProfileForm() {
               />
               {/* Display validation error */}
               {errors.name && (
-                <p className="text-sm font-medium text-destructive pt-1">
+                <p className="text-destructive pt-1 text-sm font-medium">
                   {errors.name.message}
                 </p>
               )}
@@ -103,7 +101,7 @@ export function ProfileForm() {
             {/* Add error display if schema requires format later */}
           </div>
         </CardContent>
-        <CardFooter className="flex justify-end border-t border-border px-6 py-4">
+        <CardFooter className="border-border flex justify-end border-t px-6 py-4">
           <Button type="submit" disabled={isSubmitting}>
             {' '}
             {/* Disable button while submitting */}

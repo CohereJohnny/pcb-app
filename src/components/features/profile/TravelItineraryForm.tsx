@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useForm, Controller, Resolver, FieldValues } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -49,8 +49,7 @@ export function TravelItineraryForm() {
     control,
     formState: { errors, isSubmitting },
   } = useForm<TravelItineraryFormData>({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolver: zodResolver(travelItinerarySchema) as unknown as Resolver<TravelItineraryFormData, FieldValues>,
+    resolver: zodResolver(travelItinerarySchema),
     defaultValues: {
       arrival_date: MOCK_TRAVEL_DATA.arrival_date ?? null,
       arrival_time: MOCK_TRAVEL_DATA.arrival_time ?? null,
@@ -64,12 +63,10 @@ export function TravelItineraryForm() {
     },
   });
 
-  const onSubmit = (/* data: TravelItineraryFormData */) => {
-    // console.log('Saving Travel Info (with proper Date objects):', data);
+  const onSubmit = () => {
     // Simulate API call
     return new Promise((resolve) =>
       setTimeout(() => {
-        // console.log('Mock save complete.');
         resolve(void 0);
       }, 1000)
     );
@@ -96,14 +93,14 @@ export function TravelItineraryForm() {
                       selected={field.value}
                       onChange={(date) => field.onChange(date)}
                       placeholderText="Select arrival date"
-                      className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                       dateFormat="yyyy-MM-dd"
                     />
                   </div>
                 )}
               />
               {errors.arrival_date && (
-                <p className="text-sm font-medium text-destructive pt-1">
+                <p className="text-destructive pt-1 text-sm font-medium">
                   {errors.arrival_date.message}
                 </p>
               )}
@@ -130,7 +127,7 @@ export function TravelItineraryForm() {
                       selected={field.value}
                       onChange={(date) => field.onChange(date)}
                       placeholderText="Select departure date"
-                      className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                       dateFormat="yyyy-MM-dd"
                     />
                   </div>

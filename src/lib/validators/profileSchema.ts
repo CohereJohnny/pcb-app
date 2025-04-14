@@ -12,13 +12,19 @@ export type ProfileFormData = z.infer<typeof profileFormSchema>;
 
 // --- Travel Itinerary Schema ---
 // Proper date handling with preprocess
-const zDateOptional = z.preprocess((arg) => {
-  if (!arg || (typeof arg === 'string' && arg.trim() === '')) return null;
-  return arg instanceof Date ? arg : new Date(arg as string);
-}, z.date().optional().nullable().refine(
-  (date) => !date || !isNaN(date.getTime()),
-  { message: "Invalid date format" }
-));
+const zDateOptional = z.preprocess(
+  (arg) => {
+    if (!arg || (typeof arg === 'string' && arg.trim() === '')) return null;
+    return arg instanceof Date ? arg : new Date(arg as string);
+  },
+  z
+    .date()
+    .optional()
+    .nullable()
+    .refine((date) => !date || !isNaN(date.getTime()), {
+      message: 'Invalid date format',
+    })
+);
 
 export const travelItinerarySchema = z.object({
   arrival_date: zDateOptional,
@@ -32,7 +38,14 @@ export const travelItinerarySchema = z.object({
   notes: z.string().optional().nullable(),
 });
 
-export type TravelItineraryFormData = z.infer<typeof travelItinerarySchema>;
+// Explicitly type date fields after preprocessing
+export type TravelItineraryFormData = Omit<
+  z.infer<typeof travelItinerarySchema>,
+  'arrival_date' | 'departure_date'
+> & {
+  arrival_date: Date | null | undefined;
+  departure_date: Date | null | undefined;
+};
 
 // --- Accommodation Schema ---
 export const accommodationSchema = z

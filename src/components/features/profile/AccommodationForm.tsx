@@ -49,7 +49,7 @@ export function AccommodationForm() {
 
   const powerNeedsValue = watch('power_needs');
 
-  const onSubmit = (/* data: AccommodationFormData */) => {
+  const onSubmit = () => {
     // const submissionData = data.power_needs
     //   ? data
     return new Promise<void>((resolve) =>
@@ -121,7 +121,7 @@ export function AccommodationForm() {
                 disabled={!powerNeedsValue}
               />
               {errors.power_amps && (
-                <p className="text-sm font-medium text-destructive pt-1">
+                <p className="text-destructive pt-1 text-sm font-medium">
                   {errors.power_amps.message}
                 </p>
               )}
@@ -136,7 +136,7 @@ export function AccommodationForm() {
             />
           </div>
         </CardContent>
-        <CardFooter className="flex justify-end border-t border-border px-6 py-4">
+        <CardFooter className="border-border flex justify-end border-t px-6 py-4">
           <Button type="submit" disabled={isSubmitting}>
             {isSubmitting ? 'Saving...' : 'Save Accommodation Info'}
           </Button>

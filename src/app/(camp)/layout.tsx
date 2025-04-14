@@ -19,7 +19,6 @@ export default function CampLayout({ children }: CampLayoutProps) {
         <Sidebar />
         <main className="flex-1 p-4 md:p-6 lg:p-8">{children}</main>
       </div>
-      {/* Optional Footer within the main content area or outside flex-1 */}
       {/* <Footer /> */}
     </div>
   );
