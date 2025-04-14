@@ -12,13 +12,19 @@ export type ProfileFormData = z.infer<typeof profileFormSchema>;
 
 // --- Travel Itinerary Schema ---
 // Proper date handling with preprocess
-const zDateOptional = z.preprocess((arg) => {
-  if (!arg || (typeof arg === 'string' && arg.trim() === '')) return null;
-  return arg instanceof Date ? arg : new Date(arg as string);
-}, z.date().optional().nullable().refine(
-  (date) => !date || !isNaN(date.getTime()),
-  { message: "Invalid date format" }
-));
+const zDateOptional = z.preprocess(
+  (arg) => {
+    if (!arg || (typeof arg === 'string' && arg.trim() === '')) return null;
+    return arg instanceof Date ? arg : new Date(arg as string);
+  },
+  z
+    .date()
+    .optional()
+    .nullable()
+    .refine((date) => !date || !isNaN(date.getTime()), {
+      message: 'Invalid date format',
+    })
+);
 
 export const travelItinerarySchema = z.object({
   arrival_date: zDateOptional,
@@ -32,6 +38,7 @@ export const travelItinerarySchema = z.object({
   notes: z.string().optional().nullable(),
 });
 
+// Let Zod infer the type directly, as zDateOptional should handle the conversion
 export type TravelItineraryFormData = z.infer<typeof travelItinerarySchema>;
 
 // --- Accommodation Schema ---

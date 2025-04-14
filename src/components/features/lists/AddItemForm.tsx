@@ -59,7 +59,7 @@ export function AddItemForm({ listId }: AddItemFormProps) {
           name="content"
           render={({ field }) => (
             <FormItem className="flex-1">
-              {/* <FormLabel>New Item</FormLabel> */}
+              {/* FormLabel intentionally omitted for inline style */}
               <FormControl>
                 <Input
                   placeholder="Add a new item..."
@@ -76,7 +76,9 @@ export function AddItemForm({ listId }: AddItemFormProps) {
           variant="ghost"
           size="icon"
           className="flex-shrink-0"
-          onClick={() => { /* console.log('Suggest List Item clicked') */ }}
+          onClick={() => {
+            /* Placeholder - AI feature not implemented */
+          }}
         >
           <Lightbulb className="h-4 w-4" />
           <span className="sr-only">Suggest Item</span>

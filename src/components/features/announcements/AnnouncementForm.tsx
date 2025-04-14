@@ -108,7 +108,7 @@ export function AnnouncementForm({
                       variant="ghost"
                       size="sm"
                       onClick={() => {
-                        // console.log('Draft Announcement with AI clicked')
+                        // Placeholder - AI feature not implemented
                       }}
                     >
                       <Wand2 className="mr-1 h-4 w-4" />
