@@ -28,6 +28,7 @@ import {
 } from '@/lib/validators/announcements';
 import { useAnnouncementStore } from '@/store/announcementStore';
 import { Announcement } from '@/types/dataModel';
+import { Wand2 } from 'lucide-react'; // Add icon import
 
 interface AnnouncementFormProps {
   campId: string;
@@ -100,7 +101,20 @@ export function AnnouncementForm({
               name="content"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Content</FormLabel>
+                  <div className="flex items-center justify-between">
+                    <FormLabel>Content</FormLabel>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() =>
+                        console.log('Draft Announcement with AI clicked')
+                      }
+                    >
+                      <Wand2 className="mr-1 h-4 w-4" />
+                      Draft with AI
+                    </Button>
+                  </div>
                   <FormControl>
                     <Textarea
                       placeholder="Enter announcement content..."
