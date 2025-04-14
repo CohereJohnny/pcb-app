@@ -38,14 +38,8 @@ export const travelItinerarySchema = z.object({
   notes: z.string().optional().nullable(),
 });
 
-// Explicitly type date fields after preprocessing
-export type TravelItineraryFormData = Omit<
-  z.infer<typeof travelItinerarySchema>,
-  'arrival_date' | 'departure_date'
-> & {
-  arrival_date: Date | null | undefined;
-  departure_date: Date | null | undefined;
-};
+// Let Zod infer the type directly, as zDateOptional should handle the conversion
+export type TravelItineraryFormData = z.infer<typeof travelItinerarySchema>;
 
 // --- Accommodation Schema ---
 export const accommodationSchema = z
