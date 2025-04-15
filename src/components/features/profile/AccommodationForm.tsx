@@ -19,44 +19,73 @@ import {
   accommodationSchema,
   type AccommodationFormData,
 } from '@/lib/validators/profileSchema';
+import { useProfileMutations } from '@/hooks/useProfileMutations';
+import type { UpdateProfilePayload } from '@/lib/validators/profileSchema';
 
-// Mock initial data
-const MOCK_ACCOMMODATION_DATA: Partial<AccommodationFormData> = {
-  type: 'Tent',
-  size_details: '10x10',
-  power_needs: false,
-  power_amps: undefined,
-  sharing_with: '',
-};
+// Type for the props, including optional initialData
+interface AccommodationFormProps {
+  initialData: AccommodationFormData | null;
+}
 
-export function AccommodationForm() {
+// Removed mock data
+// const MOCK_ACCOMMODATION_DATA: Partial<AccommodationFormData> = { ... };
+
+// Accept initialData prop
+export function AccommodationForm({ initialData }: AccommodationFormProps) {
   const {
     register,
     handleSubmit,
     control,
     watch,
-    formState: { errors, isSubmitting },
+    formState: { errors },
+    reset,
   } = useForm<AccommodationFormData>({
     resolver: zodResolver(accommodationSchema),
+    // Use initialData for default values
     defaultValues: {
-      type: MOCK_ACCOMMODATION_DATA.type ?? null,
-      size_details: MOCK_ACCOMMODATION_DATA.size_details ?? null,
-      power_needs: MOCK_ACCOMMODATION_DATA.power_needs ?? false,
-      power_amps: MOCK_ACCOMMODATION_DATA.power_amps ?? null,
-      sharing_with: MOCK_ACCOMMODATION_DATA.sharing_with ?? null,
+      type: initialData?.type ?? null,
+      size_details: initialData?.size_details ?? null,
+      power_needs: initialData?.power_needs ?? false,
+      power_amps: initialData?.power_amps ?? null,
+      sharing_with: initialData?.sharing_with ?? null,
     },
   });
 
+  // Use the mutation hook
+  const {
+    updateProfile,
+    isLoading: isMutating,
+    error: mutationError,
+  } = useProfileMutations();
+
+  // Reset form when initialData changes
+  React.useEffect(() => {
+    reset({
+      type: initialData?.type ?? null,
+      size_details: initialData?.size_details ?? null,
+      power_needs: initialData?.power_needs ?? false,
+      power_amps: initialData?.power_amps ?? null,
+      sharing_with: initialData?.sharing_with ?? null,
+    });
+  }, [initialData, reset]);
+
   const powerNeedsValue = watch('power_needs');
 
-  const onSubmit = () => {
-    // const submissionData = data.power_needs
-    //   ? data
-    return new Promise<void>((resolve) =>
-      setTimeout(() => {
-        resolve();
-      }, 1000)
-    );
+  // Update onSubmit to use the hook
+  const onSubmit = async (data: AccommodationFormData) => {
+    console.log('[AccommodationForm] Submitting:', data);
+    // Construct payload for the API (nested structure)
+    const payload: UpdateProfilePayload = {
+      accommodation_details: data,
+    };
+    const result = await updateProfile(payload);
+    if (result.success) {
+      console.log('[AccommodationForm] Update successful!');
+      // TODO: Add success feedback (e.g., toast)
+    } else {
+      console.error('[AccommodationForm] Update failed:', result.error);
+      // TODO: Add error feedback (e.g., toast)
+    }
   };
 
   return (
@@ -135,10 +164,16 @@ export function AccommodationForm() {
               {...register('sharing_with')}
             />
           </div>
+          {/* Display mutation error near footer */}
+          {mutationError && (
+            <p className="text-destructive pt-1 text-sm font-medium">
+              Error saving accommodation info: {mutationError}
+            </p>
+          )}
         </CardContent>
         <CardFooter className="border-border flex justify-end border-t px-6 py-4">
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? 'Saving...' : 'Save Accommodation Info'}
+          <Button type="submit" disabled={isMutating}>
+            {isMutating ? 'Saving...' : 'Save Accommodation Info'}
           </Button>
         </CardFooter>
       </Card>

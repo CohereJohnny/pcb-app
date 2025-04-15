@@ -62,3 +62,20 @@ export const accommodationSchema = z
   );
 
 export type AccommodationFormData = z.infer<typeof accommodationSchema>;
+
+// --- Combined Schema for PUT Request Body / Database Row ---
+// Matches the expected structure for the profiles table
+export const updateProfileSchema = z.object({
+  // Include fields from profileFormSchema
+  name: z.string().min(1, 'Legal name cannot be empty if provided').optional(),
+  playa_name: z.string().optional().nullable(),
+  contact_info: z.string().optional().nullable(),
+  emergency_contact: z.string().optional().nullable(),
+  // Embed travel and accommodation schemas
+  travel_itinerary: travelItinerarySchema.optional().nullable(),
+  accommodation_details: accommodationSchema.optional().nullable(),
+  // Note: We don't expect user_id or name in the PUT body,
+  // user_id comes from auth, and name might be handled separately if needed.
+});
+
+export type UpdateProfilePayload = z.infer<typeof updateProfileSchema>;
