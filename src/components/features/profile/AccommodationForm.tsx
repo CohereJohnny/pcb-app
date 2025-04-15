@@ -19,6 +19,8 @@ import {
   accommodationSchema,
   type AccommodationFormData,
 } from '@/lib/validators/profileSchema';
+import { useProfileMutations } from '@/hooks/useProfileMutations';
+import type { UpdateProfilePayload } from '@/lib/validators/profileSchema';
 
 // Type for the props, including optional initialData
 interface AccommodationFormProps {
@@ -35,8 +37,8 @@ export function AccommodationForm({ initialData }: AccommodationFormProps) {
     handleSubmit,
     control,
     watch,
-    formState: { errors, isSubmitting },
-    reset, // Add reset
+    formState: { errors },
+    reset,
   } = useForm<AccommodationFormData>({
     resolver: zodResolver(accommodationSchema),
     // Use initialData for default values
@@ -48,6 +50,13 @@ export function AccommodationForm({ initialData }: AccommodationFormProps) {
       sharing_with: initialData?.sharing_with ?? null,
     },
   });
+
+  // Use the mutation hook
+  const {
+    updateProfile,
+    isLoading: isMutating,
+    error: mutationError,
+  } = useProfileMutations();
 
   // Reset form when initialData changes
   React.useEffect(() => {
@@ -62,16 +71,21 @@ export function AccommodationForm({ initialData }: AccommodationFormProps) {
 
   const powerNeedsValue = watch('power_needs');
 
-  // TODO: Implement actual API call in Sprint 2
-  const onSubmit = (data: AccommodationFormData) => {
-    console.log('Accommodation form submitted with:', data);
-    // Simulate API call
-    return new Promise<void>((resolve) =>
-      setTimeout(() => {
-        // TODO: Call PUT /api/profile endpoint here (with nested accommodation data)
-        resolve();
-      }, 1000)
-    );
+  // Update onSubmit to use the hook
+  const onSubmit = async (data: AccommodationFormData) => {
+    console.log('[AccommodationForm] Submitting:', data);
+    // Construct payload for the API (nested structure)
+    const payload: UpdateProfilePayload = {
+      accommodation_details: data,
+    };
+    const result = await updateProfile(payload);
+    if (result.success) {
+      console.log('[AccommodationForm] Update successful!');
+      // TODO: Add success feedback (e.g., toast)
+    } else {
+      console.error('[AccommodationForm] Update failed:', result.error);
+      // TODO: Add error feedback (e.g., toast)
+    }
   };
 
   return (
@@ -150,10 +164,16 @@ export function AccommodationForm({ initialData }: AccommodationFormProps) {
               {...register('sharing_with')}
             />
           </div>
+          {/* Display mutation error near footer */}
+          {mutationError && (
+            <p className="text-destructive pt-1 text-sm font-medium">
+              Error saving accommodation info: {mutationError}
+            </p>
+          )}
         </CardContent>
         <CardFooter className="border-border flex justify-end border-t px-6 py-4">
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? 'Saving...' : 'Save Accommodation Info'}
+          <Button type="submit" disabled={isMutating}>
+            {isMutating ? 'Saving...' : 'Save Accommodation Info'}
           </Button>
         </CardFooter>
       </Card>

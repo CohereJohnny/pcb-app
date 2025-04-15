@@ -1,32 +1,16 @@
-// ProfilePage as a Server Component for Sprint 2 data fetching
+// ProfilePage as a Server Component using API Route for data fetching
 
 import React from 'react';
-import { redirect } from 'next/navigation';
+// No longer needs redirect - auth handled by API route
+// import { redirect } from 'next/navigation';
 import { ProfileForm } from '@/components/features/profile/ProfileForm';
 import { TravelItineraryForm } from '@/components/features/profile/TravelItineraryForm';
 import { AccommodationForm } from '@/components/features/profile/AccommodationForm';
 import { Separator } from '@/components/ui/separator';
-import { fetchUserProfile } from '@/lib/supabase/queries/profile';
-
-// Direct Supabase client creation (workaround)
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
-
-// Workaround: Define createSupabaseServerClient locally accepting cookie store
-function createSupabaseServerClient(cookieStore: ReturnType<typeof cookies>) {
-  return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return cookieStore.get(name)?.value;
-        },
-        // NOTE: set/remove omitted based on previous attempts for build
-      },
-    }
-  );
-}
+// No longer needs direct Supabase imports or helpers
+// import { fetchUserProfile } from '@/lib/supabase/queries/profile';
+// import { createServerClient, type CookieOptions } from '@supabase/ssr';
+// import { cookies } from 'next/headers';
 
 // Make the page component async and accept params
 export default async function ProfilePage({
@@ -34,61 +18,72 @@ export default async function ProfilePage({
 }: {
   params: { camp_id: string };
 }) {
-  const campId = params.camp_id;
+  const campId = params.camp_id; // Can keep this for context if needed
   console.log('[ProfilePage] Rendering for Camp ID:', campId);
 
-  // Get cookie store within the async component context
-  const cookieStore = cookies();
+  let profile = null;
+  let fetchError: string | null = null;
+  let response: Response | null = null; // Declare response outside try
 
-  let supabase;
   try {
-    console.log(
-      '[ProfilePage] Attempting to create Supabase client (direct)...'
-    );
-    // Pass cookieStore to the helper
-    supabase = createSupabaseServerClient(cookieStore);
-    console.log('[ProfilePage] Supabase client created successfully (direct).');
-  } catch (clientError) {
-    console.error(
-      '[ProfilePage] FATAL: Error creating Supabase client (direct):',
-      clientError
-    );
+    console.log('[ProfilePage] Fetching data from /api/profile...');
+    // Fetch from the API route - MUST use absolute URL on server-side
+    // Or configure fetch to handle relative URLs correctly (requires setup)
+    // Using a placeholder for base URL for now - replace with actual env var
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    response = await fetch(`${baseUrl}/api/profile`, {
+      method: 'GET',
+      headers: {
+        // Include cookies or other headers if necessary, but fetch should handle session cookies
+        'Content-Type': 'application/json',
+      },
+      cache: 'no-store', // Ensure fresh data is fetched
+    });
+
+    console.log(`[ProfilePage] API response status: ${response.status}`);
+
+    if (response.ok) {
+      profile = await response.json();
+      console.log('[ProfilePage] Successfully fetched profile data:', profile);
+    } else if (response.status !== 401) {
+      // Handle non-401 errors here
+      const errorData = await response
+        .json()
+        .catch(() => ({ error: 'Failed to parse error response' }));
+      console.error(
+        `[ProfilePage] API fetch error (${response.status}):`,
+        errorData
+      );
+      fetchError = errorData.error || `HTTP error ${response.status}`;
+    }
+    // Don't handle 401 inside the try-catch related to fetch
+  } catch (error) {
+    console.error('[ProfilePage] Unexpected error during fetch/parse:', error);
+    fetchError =
+      error instanceof Error
+        ? error.message
+        : 'An unknown fetch error occurred';
+  }
+
+  // Handle 401 redirect *after* the try-catch
+  if (response && response.status === 401) {
+    console.log('[ProfilePage] Unauthorized (401), redirecting to login...');
+    const { redirect } = await import('next/navigation');
+    redirect('/login');
+  }
+
+  // Render error page if fetch failed (for non-401 errors)
+  if (fetchError) {
     return (
-      <div>Error initializing Supabase client. Please check server logs.</div>
+      <div className="p-4 text-red-500">
+        <h1 className="text-xl font-bold">Error Loading Profile</h1>
+        <p>Could not load your profile data. Please try again later.</p>
+        <pre className="mt-2 text-sm">Error: {fetchError}</pre>
+      </div>
     );
   }
-
-  // Fetch user session
-  console.log('[ProfilePage] Attempting to get user session...');
-  const { data: authData, error: authError } = await supabase.auth.getUser();
-
-  console.log('[ProfilePage] getUser result:', {
-    data: authData,
-    error: authError,
-  });
-
-  if (authError || !authData?.user) {
-    console.error(
-      '[ProfilePage] Auth error or no user found, redirecting to login...',
-      { authError, user: authData?.user }
-    );
-    redirect('/login'); // Redirect to login if not authenticated
-  }
-
-  const user = authData.user;
-  console.log('[ProfilePage] Authenticated user found:', user.id);
-
-  // Fetch user profile data
-  console.log('[ProfilePage] Now attempting to fetch profile...');
-  const { profile, error: profileError } = await fetchUserProfile(user.id);
-
-  if (profileError) {
-    console.error('Error fetching user profile:', profileError.message);
-  }
-  console.log('Fetched profile data:', profile);
 
   // Pass the fetched profile to the forms
-  // Note: The forms themselves will need to be Client Components
   return (
     <div className="space-y-8 pb-8">
       <div>

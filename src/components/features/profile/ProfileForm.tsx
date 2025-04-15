@@ -18,6 +18,8 @@ import {
   profileFormSchema,
   type ProfileFormData,
 } from '@/lib/validators/profileSchema';
+import { useProfileMutations } from '@/hooks/useProfileMutations';
+import type { UpdateProfilePayload } from '@/lib/validators/profileSchema';
 
 // Type for the props, including optional initialData
 interface ProfileFormProps {
@@ -32,13 +34,19 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
-    reset, // Add reset function
+    formState: { errors },
+    reset,
   } = useForm<ProfileFormData>({
     resolver: zodResolver(profileFormSchema),
-    // Use initialData for default values, fallback to empty object
     defaultValues: initialData ?? {},
   });
+
+  // Use the mutation hook
+  const {
+    updateProfile,
+    isLoading: isMutating,
+    error: mutationError,
+  } = useProfileMutations();
 
   // Reset form when initialData changes (e.g., after fetch)
   React.useEffect(() => {
@@ -49,17 +57,24 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
     }
   }, [initialData, reset]);
 
-  // Updated onSubmit to accept validated data
-  // TODO: Implement actual API call in Sprint 2
-  const onSubmit = (data: ProfileFormData) => {
-    console.log('Profile form submitted with:', data);
-    // Simulate API call
-    return new Promise((resolve) =>
-      setTimeout(() => {
-        // TODO: Call PUT /api/profile endpoint here
-        resolve(void 0);
-      }, 1000)
-    );
+  // Update onSubmit to use the hook
+  const onSubmit = async (data: ProfileFormData) => {
+    console.log('[ProfileForm] Submitting:', data);
+    // Construct payload for the API (only fields from this form)
+    const payload: UpdateProfilePayload = {
+      name: data.name,
+      playa_name: data.playa_name,
+      contact_info: data.contact_info,
+      emergency_contact: data.emergency_contact,
+    };
+    const result = await updateProfile(payload);
+    if (result.success) {
+      console.log('[ProfileForm] Update successful!');
+      // TODO: Add success feedback (e.g., toast)
+    } else {
+      console.error('[ProfileForm] Update failed:', result.error);
+      // TODO: Add error feedback (e.g., toast)
+    }
   };
 
   return (
@@ -114,12 +129,17 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
             />
             {/* Add error display if schema requires format later */}
           </div>
+          {/* Display mutation error near footer */}
+          {mutationError && (
+            <p className="text-destructive pt-1 text-sm font-medium">
+              Error saving profile: {mutationError}
+            </p>
+          )}
         </CardContent>
         <CardFooter className="border-border flex justify-end border-t px-6 py-4">
-          <Button type="submit" disabled={isSubmitting}>
-            {' '}
-            {/* Disable button while submitting */}
-            {isSubmitting ? 'Saving...' : 'Save Profile'}
+          {/* Use isLoading from the hook */}
+          <Button type="submit" disabled={isMutating}>
+            {isMutating ? 'Saving...' : 'Save Profile'}
           </Button>
         </CardFooter>
       </Card>

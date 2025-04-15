@@ -28,6 +28,8 @@ import {
   travelItinerarySchema,
   type TravelItineraryFormData,
 } from '@/lib/validators/profileSchema';
+import { useProfileMutations } from '@/hooks/useProfileMutations';
+import type { UpdateProfilePayload } from '@/lib/validators/profileSchema';
 
 // Type for the props, including optional initialData
 interface TravelItineraryFormProps {
@@ -43,8 +45,8 @@ export function TravelItineraryForm({ initialData }: TravelItineraryFormProps) {
     register,
     handleSubmit,
     control,
-    formState: { errors, isSubmitting },
-    reset, // Add reset
+    formState: { errors },
+    reset,
   } = useForm<TravelItineraryFormData>({
     // NOTE: Resolver type assertion might need revisiting if types conflict
     resolver: zodResolver(travelItinerarySchema) as unknown as Resolver<
@@ -64,6 +66,13 @@ export function TravelItineraryForm({ initialData }: TravelItineraryFormProps) {
       notes: initialData?.notes ?? null,
     },
   });
+
+  // Use the mutation hook
+  const {
+    updateProfile,
+    isLoading: isMutating,
+    error: mutationError,
+  } = useProfileMutations();
 
   // Reset form when initialData changes
   React.useEffect(() => {
@@ -92,16 +101,21 @@ export function TravelItineraryForm({ initialData }: TravelItineraryFormProps) {
     reset(defaults);
   }, [initialData, reset]);
 
-  // TODO: Implement actual API call in Sprint 2
-  const onSubmit = (data: TravelItineraryFormData) => {
-    console.log('Travel form submitted with:', data);
-    // Simulate API call
-    return new Promise((resolve) =>
-      setTimeout(() => {
-        // TODO: Call PUT /api/profile endpoint here (with nested travel data)
-        resolve(void 0);
-      }, 1000)
-    );
+  // Update onSubmit to use the hook
+  const onSubmit = async (data: TravelItineraryFormData) => {
+    console.log('[TravelItineraryForm] Submitting:', data);
+    // Construct payload for the API (nested structure)
+    const payload: UpdateProfilePayload = {
+      travel_itinerary: data,
+    };
+    const result = await updateProfile(payload);
+    if (result.success) {
+      console.log('[TravelItineraryForm] Update successful!');
+      // TODO: Add success feedback (e.g., toast)
+    } else {
+      console.error('[TravelItineraryForm] Update failed:', result.error);
+      // TODO: Add error feedback (e.g., toast)
+    }
   };
 
   return (
@@ -252,10 +266,17 @@ export function TravelItineraryForm({ initialData }: TravelItineraryFormProps) {
               {...register('notes')}
             />
           </div>
+          {/* Display mutation error near footer */}
+          {mutationError && (
+            <p className="text-destructive pt-1 text-sm font-medium">
+              Error saving travel info: {mutationError}
+            </p>
+          )}
         </CardContent>
         <CardFooter className="flex justify-end">
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? 'Saving...' : 'Save Travel Info'}
+          {/* Use isLoading from the hook */}
+          <Button type="submit" disabled={isMutating}>
+            {isMutating ? 'Saving...' : 'Save Travel Info'}
           </Button>
         </CardFooter>
       </Card>
