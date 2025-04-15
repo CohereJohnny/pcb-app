@@ -1,25 +1,37 @@
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
+// import { createServerClient } from '@supabase/ssr'; // Commented out as unused
+// import { cookies } from 'next/headers'; // Commented out as unused
 
 // NOTE: Direct client instantiation needed due to unresolved build issues with server helpers
 // See: sprints/tech_debt.md
-function createSupabaseServerClient() {
-  const cookieStore = cookies();
-  return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return cookieStore.get(name)?.value;
-        },
-        // set/remove omitted for read-only client needed here, matching workaround
-      },
-    }
-  );
-}
+// function createSupabaseServerClient() {
+//   const cookieStore = cookies();
+//   return createServerClient(
+//     process.env.NEXT_PUBLIC_SUPABASE_URL!,
+//     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+//     {
+//       cookies: {
+//         get(name: string) {
+//           return cookieStore.get(name)?.value;
+//         },
+//         // set/remove omitted for read-only client needed here, matching workaround
+//       },
+//     }
+//   );
+// }
 
 export async function fetchUserProfile(userId: string) {
+  // Functionality temporarily commented out due to build issues with createSupabaseServerClient
+  // and because ProfilePage now uses the /api/profile route instead of calling this directly.
+  console.log(
+    `fetchUserProfile called for user: ${userId}, but is currently disabled.`
+  );
+  return {
+    profile: null,
+    error: new Error('Direct fetchUserProfile is currently disabled.'),
+  };
+
+  // Original logic (commented out):
+  /*
   const supabase = createSupabaseServerClient();
 
   console.log(`Fetching profile for user: ${userId}`);
@@ -61,4 +73,5 @@ export async function fetchUserProfile(userId: string) {
       err instanceof Error ? err : new Error('An unexpected error occurred');
     return { profile: null, error };
   }
+  */
 }

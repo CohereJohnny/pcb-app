@@ -1,9 +1,10 @@
-import type { User } from '@/types';
+import type { User } from '@/types/dataModel';
 
 // NOTE: Mock data is being phased out. Use fetched data where available.
 
 // MOCK USER - Replace with actual auth user context
 export const MOCK_USER: User = {
+  id: 'mock-user-id',
   // ... existing mock user data ...
 };
 
