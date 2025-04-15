@@ -20,40 +20,55 @@ import {
   type AccommodationFormData,
 } from '@/lib/validators/profileSchema';
 
-// Mock initial data
-const MOCK_ACCOMMODATION_DATA: Partial<AccommodationFormData> = {
-  type: 'Tent',
-  size_details: '10x10',
-  power_needs: false,
-  power_amps: undefined,
-  sharing_with: '',
-};
+// Type for the props, including optional initialData
+interface AccommodationFormProps {
+  initialData: AccommodationFormData | null;
+}
 
-export function AccommodationForm() {
+// Removed mock data
+// const MOCK_ACCOMMODATION_DATA: Partial<AccommodationFormData> = { ... };
+
+// Accept initialData prop
+export function AccommodationForm({ initialData }: AccommodationFormProps) {
   const {
     register,
     handleSubmit,
     control,
     watch,
     formState: { errors, isSubmitting },
+    reset, // Add reset
   } = useForm<AccommodationFormData>({
     resolver: zodResolver(accommodationSchema),
+    // Use initialData for default values
     defaultValues: {
-      type: MOCK_ACCOMMODATION_DATA.type ?? null,
-      size_details: MOCK_ACCOMMODATION_DATA.size_details ?? null,
-      power_needs: MOCK_ACCOMMODATION_DATA.power_needs ?? false,
-      power_amps: MOCK_ACCOMMODATION_DATA.power_amps ?? null,
-      sharing_with: MOCK_ACCOMMODATION_DATA.sharing_with ?? null,
+      type: initialData?.type ?? null,
+      size_details: initialData?.size_details ?? null,
+      power_needs: initialData?.power_needs ?? false,
+      power_amps: initialData?.power_amps ?? null,
+      sharing_with: initialData?.sharing_with ?? null,
     },
   });
 
+  // Reset form when initialData changes
+  React.useEffect(() => {
+    reset({
+      type: initialData?.type ?? null,
+      size_details: initialData?.size_details ?? null,
+      power_needs: initialData?.power_needs ?? false,
+      power_amps: initialData?.power_amps ?? null,
+      sharing_with: initialData?.sharing_with ?? null,
+    });
+  }, [initialData, reset]);
+
   const powerNeedsValue = watch('power_needs');
 
-  const onSubmit = () => {
-    // const submissionData = data.power_needs
-    //   ? data
+  // TODO: Implement actual API call in Sprint 2
+  const onSubmit = (data: AccommodationFormData) => {
+    console.log('Accommodation form submitted with:', data);
+    // Simulate API call
     return new Promise<void>((resolve) =>
       setTimeout(() => {
+        // TODO: Call PUT /api/profile endpoint here (with nested accommodation data)
         resolve();
       }, 1000)
     );

@@ -19,30 +19,44 @@ import {
   type ProfileFormData,
 } from '@/lib/validators/profileSchema';
 
-// Mock initial data (can be fetched later)
-const MOCK_PROFILE_DATA: Partial<ProfileFormData> = {
-  name: 'Sam Stardust',
-  playa_name: 'Stardust',
-  contact_info: 'sam.stardust@example.com',
-  emergency_contact: 'Alex Sparky - 555-1234',
-};
+// Type for the props, including optional initialData
+interface ProfileFormProps {
+  initialData: Partial<ProfileFormData> | null;
+}
 
-export function ProfileForm() {
+// Removed mock data
+// const MOCK_PROFILE_DATA: Partial<ProfileFormData> = { ... };
+
+// Accept initialData prop
+export function ProfileForm({ initialData }: ProfileFormProps) {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting }, // Add isSubmitting for button state
+    formState: { errors, isSubmitting },
+    reset, // Add reset function
   } = useForm<ProfileFormData>({
     resolver: zodResolver(profileFormSchema),
-    defaultValues: MOCK_PROFILE_DATA, // Use mock data as default values
+    // Use initialData for default values, fallback to empty object
+    defaultValues: initialData ?? {},
   });
 
+  // Reset form when initialData changes (e.g., after fetch)
+  React.useEffect(() => {
+    if (initialData) {
+      reset(initialData);
+    } else {
+      reset({}); // Reset to empty if initialData is null
+    }
+  }, [initialData, reset]);
+
   // Updated onSubmit to accept validated data
-  const onSubmit = () => {
+  // TODO: Implement actual API call in Sprint 2
+  const onSubmit = (data: ProfileFormData) => {
+    console.log('Profile form submitted with:', data);
     // Simulate API call
     return new Promise((resolve) =>
       setTimeout(() => {
-        // TODO: Update mock context or local state here (in a real scenario, call API)
+        // TODO: Call PUT /api/profile endpoint here
         resolve(void 0);
       }, 1000)
     );

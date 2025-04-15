@@ -29,47 +29,76 @@ import {
   type TravelItineraryFormData,
 } from '@/lib/validators/profileSchema';
 
-// Parse date strings into Date objects for the mock data
-const MOCK_TRAVEL_DATA: Partial<TravelItineraryFormData> = {
-  arrival_date: new Date('2024-08-27'),
-  arrival_time: 'Afternoon',
-  departure_date: new Date('2024-09-03'),
-  departure_time: 'Morning',
-  mode_of_transport: 'Personal Vehicle',
-  origin: 'San Francisco, CA',
-  vehicle_pass_status: 'HAVE',
-  ride_status: 'HAVE',
-  notes: 'Bringing extra water.',
-};
+// Type for the props, including optional initialData
+interface TravelItineraryFormProps {
+  initialData: TravelItineraryFormData | null;
+}
 
-export function TravelItineraryForm() {
+// Removed mock data
+// const MOCK_TRAVEL_DATA: Partial<TravelItineraryFormData> = { ... };
+
+// Accept initialData prop
+export function TravelItineraryForm({ initialData }: TravelItineraryFormProps) {
   const {
     register,
     handleSubmit,
     control,
     formState: { errors, isSubmitting },
+    reset, // Add reset
   } = useForm<TravelItineraryFormData>({
+    // NOTE: Resolver type assertion might need revisiting if types conflict
     resolver: zodResolver(travelItinerarySchema) as unknown as Resolver<
       TravelItineraryFormData,
       FieldValues
     >,
+    // Use initialData for default values
     defaultValues: {
-      arrival_date: MOCK_TRAVEL_DATA.arrival_date ?? null,
-      arrival_time: MOCK_TRAVEL_DATA.arrival_time ?? null,
-      departure_date: MOCK_TRAVEL_DATA.departure_date ?? null,
-      departure_time: MOCK_TRAVEL_DATA.departure_time ?? null,
-      mode_of_transport: MOCK_TRAVEL_DATA.mode_of_transport ?? null,
-      origin: MOCK_TRAVEL_DATA.origin ?? null,
-      vehicle_pass_status: MOCK_TRAVEL_DATA.vehicle_pass_status ?? null,
-      ride_status: MOCK_TRAVEL_DATA.ride_status ?? null,
-      notes: MOCK_TRAVEL_DATA.notes ?? null,
+      arrival_date: initialData?.arrival_date ?? null,
+      arrival_time: initialData?.arrival_time ?? null,
+      departure_date: initialData?.departure_date ?? null,
+      departure_time: initialData?.departure_time ?? null,
+      mode_of_transport: initialData?.mode_of_transport ?? null,
+      origin: initialData?.origin ?? null,
+      vehicle_pass_status: initialData?.vehicle_pass_status ?? null,
+      ride_status: initialData?.ride_status ?? null,
+      notes: initialData?.notes ?? null,
     },
   });
 
-  const onSubmit = () => {
+  // Reset form when initialData changes
+  React.useEffect(() => {
+    // Ensure dates are Date objects or null for DatePicker
+    const defaults = {
+      arrival_date:
+        initialData?.arrival_date instanceof Date
+          ? initialData.arrival_date
+          : initialData?.arrival_date
+            ? new Date(initialData.arrival_date)
+            : null,
+      arrival_time: initialData?.arrival_time ?? null,
+      departure_date:
+        initialData?.departure_date instanceof Date
+          ? initialData.departure_date
+          : initialData?.departure_date
+            ? new Date(initialData.departure_date)
+            : null,
+      departure_time: initialData?.departure_time ?? null,
+      mode_of_transport: initialData?.mode_of_transport ?? null,
+      origin: initialData?.origin ?? null,
+      vehicle_pass_status: initialData?.vehicle_pass_status ?? null,
+      ride_status: initialData?.ride_status ?? null,
+      notes: initialData?.notes ?? null,
+    };
+    reset(defaults);
+  }, [initialData, reset]);
+
+  // TODO: Implement actual API call in Sprint 2
+  const onSubmit = (data: TravelItineraryFormData) => {
+    console.log('Travel form submitted with:', data);
     // Simulate API call
     return new Promise((resolve) =>
       setTimeout(() => {
+        // TODO: Call PUT /api/profile endpoint here (with nested travel data)
         resolve(void 0);
       }, 1000)
     );
